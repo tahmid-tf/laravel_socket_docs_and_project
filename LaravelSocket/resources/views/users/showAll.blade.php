@@ -27,10 +27,10 @@
                 let users = response.data;
 
                 users.forEach((user, index) => {
-                    let elemnt = document.createElement("li");
-                    elemnt.setAttribute('id', user.id);
-                    elemnt.innerText = user.name;
-                    userElement.appendChild(elemnt);
+                    let element = document.createElement("li");
+                    element.setAttribute('id', user.id);
+                    element.innerText = user.name;
+                    userElement.appendChild(element);
 
                 });
             }
