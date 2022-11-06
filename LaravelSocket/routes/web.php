@@ -22,8 +22,23 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// --------------------------- Live Data from model -----------------------------------------
+
 Route::view("/users", "users.showAll")->name('users.all');
+
+// --------------------------- Live Data from model -----------------------------------------
+
+
+// ------------------------------------ Game ------------------------------------------------
 
 Route::view('/game', 'game.show')->name('game.show');
 
+// ------------------------------------ Game ------------------------------------------------
+
+
+// ------------------------------------ Chat room ------------------------------------------------
+
 Route::get('/chat', "ChatController@showChat")->name('chat.show');
+Route::post('/chat/message', "ChatController@sendMessage")->name('chat.message');
+
+// ------------------------------------ Chat room ------------------------------------------------

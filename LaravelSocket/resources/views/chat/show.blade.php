@@ -23,8 +23,8 @@
                                             class="list-unstyled overflow-auto"
                                             style="height: 45vh"
                                         >
-                                            <li>Test 1: Hello</li>
-                                            <li>Test 2: Hi There</li>
+                                            {{--                                            <li>Test 1: Hello</li>--}}
+                                            {{--                                            <li>Test 2: Hi There</li>--}}
                                         </ul>
                                     </div>
                                 </div>
@@ -35,8 +35,7 @@
                                             <input type="text" id="message" class="form-control">
                                         </div>
                                         <div class="col-2">
-                                            <button id="send" type="submit" class="btn btn-primary btn-block">Send
-                                            </button>
+                                            <button id="send" type="submit" class="btn btn-primary btn-block">Send</button>
                                         </div>
                                     </div>
                                 </form>
@@ -65,6 +64,9 @@
         @push('scripts')
             <script>
                 const userElement = document.getElementById("users");
+                const messageElement = document.getElementById("message");
+                const sendData = document.getElementById("send");
+                let messages = document.getElementById("messages");
 
                 Echo.join('chat').here(users => {
                     users.forEach((user, index) => {
@@ -83,7 +85,26 @@
                 }).leaving(user => {
                     const element = document.getElementById(user.id);
                     element.parentNode.removeChild(element);
-                });
+                }).listen('MessageSent', el => {
 
+                    let gg = document.createElement('li');
+                    gg.innerText = el.user + " : " + el.message;
+                    messages.appendChild(gg);
+                });
+            </script>
+
+            <script>
+                sendData.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    window.axios.post("/chat/message", {
+                        user: '{{ auth()->user()->name }}',
+                        message: messageElement.value,
+                    }).then(el => {
+                        // console.log(el);
+                    });
+
+                    messageElement.value = "";
+                });
             </script>
     @endpush
