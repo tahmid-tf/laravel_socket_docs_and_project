@@ -2,7 +2,9 @@
 
 @push('styles')
     <style type="text/css">
-
+        #users>li {
+            cursor: pointer;
+        }
     </style>
 @endpush
 
@@ -18,13 +20,9 @@
                             <div class="col-10">
                                 <div class="row">
                                     <div class="col-12 border rounded-lg p-3">
-                                        <ul
-                                            id="messages"
-                                            class="list-unstyled overflow-auto"
-                                            style="height: 45vh"
-                                        >
-                                            {{--                                            <li>Test 1: Hello</li>--}}
-                                            {{--                                            <li>Test 2: Hi There</li>--}}
+                                        <ul id="messages" class="list-unstyled overflow-auto" style="height: 45vh">
+                                            {{--                                            <li>Test 1: Hello</li> --}}
+                                            {{--                                            <li>Test 2: Hi There</li> --}}
                                         </ul>
                                     </div>
                                 </div>
@@ -35,7 +33,8 @@
                                             <input type="text" id="message" class="form-control">
                                         </div>
                                         <div class="col-2">
-                                            <button id="send" type="submit" class="btn btn-primary btn-block">Send</button>
+                                            <button id="send" type="submit"
+                                                class="btn btn-primary btn-block">Send</button>
                                         </div>
                                     </div>
                                 </form>
@@ -43,13 +42,9 @@
 
                             <div class="col-2">
                                 <p><strong>Online Now</strong></p>
-                                <ul
-                                    id="users"
-                                    class="list-unstyled overflow-auto text-info"
-                                    style="height: 45vh"
-                                >
-                                    {{--                                    <li>Test 1</li>--}}
-                                    {{--                                    <li>Test 2</li>--}}
+                                <ul id="users" class="list-unstyled overflow-auto text-info" style="height: 45vh">
+                                    {{--                                    <li>Test 1</li> --}}
+                                    {{--                                    <li>Test 2</li> --}}
                                 </ul>
                             </div>
 
@@ -59,52 +54,64 @@
                 </div>
             </div>
         </div>
-        @endsection
+    @endsection
 
-        @push('scripts')
-            <script>
-                const userElement = document.getElementById("users");
-                const messageElement = document.getElementById("message");
-                const sendData = document.getElementById("send");
-                let messages = document.getElementById("messages");
+    @push('scripts')
+        <script>
+            const userElement = document.getElementById("users");
+            const messageElement = document.getElementById("message");
+            const sendData = document.getElementById("send");
+            let messages = document.getElementById("messages");
 
-                Echo.join('chat').here(users => {
-                    users.forEach((user, index) => {
-                        // console.log(users);
-                        let element = document.createElement("li");
-                        element.setAttribute('id', user.id);
-                        element.innerText = user.name;
-                        userElement.appendChild(element);
-
-                    });
-                }).joining(user => {
+            Echo.join('chat').here(users => {
+                users.forEach((user, index) => {
+                    // console.log(users);
                     let element = document.createElement("li");
                     element.setAttribute('id', user.id);
+                    element.setAttribute('onclick', 'greetUser("' + user.id + '")');
                     element.innerText = user.name;
                     userElement.appendChild(element);
-                }).leaving(user => {
-                    const element = document.getElementById(user.id);
-                    element.parentNode.removeChild(element);
-                }).listen('MessageSent', el => {
 
-                    let gg = document.createElement('li');
-                    gg.innerText = el.user + " : " + el.message;
-                    messages.appendChild(gg);
                 });
-            </script>
+            }).joining(user => {
+                let element = document.createElement("li");
+                element.setAttribute('id', user.id);
+                element.setAttribute('onclick', 'greetUser("' + user.id + '")');
+                element.innerText = user.name;
+                userElement.appendChild(element);
+            }).leaving(user => {
+                const element = document.getElementById(user.id);
+                element.parentNode.removeChild(element);
+            }).listen('MessageSent', el => {
 
-            <script>
-                sendData.addEventListener('click', function (e) {
-                    e.preventDefault();
+                let gg = document.createElement('li');
+                gg.innerText = el.user + " : " + el.message;
+                messages.appendChild(gg);
+            });
+        </script>
 
-                    window.axios.post("/chat/message", {
-                        user: '{{ auth()->user()->name }}',
-                        message: messageElement.value,
-                    }).then(el => {
-                        // console.log(el);
-                    });
+        <script>
+            sendData.addEventListener('click', function(e) {
+                e.preventDefault();
 
-                    messageElement.value = "";
+                window.axios.post("/chat/message", {
+                    user: '{{ auth()->user()->name }}',
+                    message: messageElement.value,
+                }).then(el => {
+                    // console.log(el);
                 });
-            </script>
+
+                messageElement.value = "";
+            });
+        </script>
+
+        <script>
+            function greetUser(id) {
+                window.axios.post('/chat/greet/' + id).then(
+                    el => {
+                        console.log(el);
+                    }
+                );
+            }
+        </script>
     @endpush
