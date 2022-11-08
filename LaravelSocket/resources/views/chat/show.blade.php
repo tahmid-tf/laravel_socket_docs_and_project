@@ -109,9 +109,18 @@
             function greetUser(id) {
                 window.axios.post('/chat/greet/' + id).then(
                     el => {
-                        console.log(el);
+                        // console.log(el);
                     }
                 );
             }
+        </script>
+
+        <script>
+            Echo.private("chat.greet.{{ auth()->user()->id }}").listen("GreetingSent", el => {
+                let gg = document.createElement('li');
+                gg.setAttribute("style", "color : green");
+                gg.innerText = el.message + " greeted you";
+                messages.appendChild(gg);
+            });
         </script>
     @endpush

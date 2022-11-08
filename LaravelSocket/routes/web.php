@@ -40,6 +40,11 @@ Route::view('/game', 'game.show')->name('game.show');
 
 Route::get('/chat', "ChatController@showChat")->name('chat.show');
 Route::post('/chat/message', "ChatController@sendMessage")->name('chat.message');
-Route::post('/chat/greet/{user}', "ChatController@greetReceived")->name('chat.greet');
 
 // ------------------------------------ Chat room ------------------------------------------------
+
+// ------------------------------------ Private Chat room ------------------------------------------------
+
+Route::post('/chat/greet/{user}', "ChatController@greetReceived")->name('chat.greet');
+
+// ------------------------------------ Private Chat room ------------------------------------------------
